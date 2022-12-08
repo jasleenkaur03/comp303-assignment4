@@ -34,6 +34,13 @@ public class CruiseController {
         return "newcruise";
     }
 
+    @RequestMapping(value= "/cruise/edit/{cruiseId}", method = RequestMethod.POST)
+    public String editCruise(@PathVariable("cruiseId") String cruiseID, Model model) throws Exception {
+        Cruise cruise = cruiseService.findCruise(cruiseID).get();
+        model.addAttribute("cruiseData", cruise);
+        return "editcruise";
+    }
+
     @RequestMapping(value = "/cruise/add", method = RequestMethod.POST)
     public String addCruisePost(@RequestParam(name = "cruiseId", required = true) String cruiseId,
             @RequestParam(name = "departureDate", required = true) String departureDate,
@@ -55,10 +62,32 @@ public class CruiseController {
 
     }
 
-    @RequestMapping(value = "/delete/{cruiseId}", method = {RequestMethod.DELETE, RequestMethod.POST, RequestMethod.GET})
+    @RequestMapping(value = "/cruise/edit", method = RequestMethod.POST)
+    public String editCruisePost(@RequestParam(name = "cruiseId", required = true) String cruiseId,
+            @RequestParam(name = "departureDate", required = true) String departureDate,
+            @RequestParam(name = "cruiseDestination", required = true) String cruiseDestination,
+            @RequestParam(name = "cruiseLine", required = true) String cruiseLine,
+            @RequestParam(name = "visitingPlaces", required = true) String visitingPlaces,
+            @RequestParam(name = "duration", required = true) int duration,
+            @RequestParam(name = "price", required = true) String price, Model model) throws Exception {
+
+        Cruise cruise = new Cruise(cruiseId, cruiseDestination, cruiseLine, departureDate, visitingPlaces, duration, Double.parseDouble(price));
+
+        if (new SimpleDateFormat("yyyy-MM-dd").parse(departureDate).before(new Date())) {
+            model.addAttribute("error", "departure cruise date is past");
+            model.addAttribute("cruiseData", cruise);
+            return "editcruise";
+        } else {
+            cruiseService.updateCruise(cruise);
+            return "redirect:all";
+        }
+
+    }
+
+    @RequestMapping(value = "/cruise/delete/{cruiseId}", method = {RequestMethod.DELETE, RequestMethod.POST, RequestMethod.GET})
     String deleteCruise(@PathVariable("cruiseId") String cruiseID) throws Exception {
         cruiseService.delCruise(cruiseID);
-        return "redirect:all";
+        return "redirect:/cruise/all";
 
     }
 }

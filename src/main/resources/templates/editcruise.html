@@ -1,5 +1,5 @@
 <!doctype html>
-<html xmlns:th="http://thymeleaf.org">
+<html lang="en">
 
 <head>
     <meta charset="utf-8">
@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Hugo 0.104.2">
-    <title>Cruise Dashboard</title>
+    <title>Edit Cruise - Booking System</title>
 
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -83,7 +83,7 @@
                         <a class="nav-link" aria-current="page" href="/admin">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="/cruise/all">All Cruises</a>
+                        <a class="nav-link" href="/cruise/all">All Cruises</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/cruise/add">Add Cruise</a>
@@ -97,40 +97,62 @@
 
     <main class="container">
         <div class="bg-light p-5 rounded">
-            <h1>All Cruises (Dashboard)</h1>
+            <h1>Edit the cruise (Id: <span th:text="${cruiseData.cruiseId}"></span>)</h1>
             <br>
-            <table class="table table-responsive table-striped">
-                <tr>
-                    <th>Cruise Id</th>
-                    <th>Cruise Destination</th>
-                    <th>Cruise Line</th>
-                    <th>Cruise Date</th>
-                    <th>Visting Place</th>
-                    <th>Cruise Duration</th>
-                    <th>Cruise Price</th>
-                    <th>Actions</th>
+            <div th:if=${error}>
+                <div class="alert alert-danger">
+                    <strong>Error!</strong> 
+                    <p th:text="${error}" />
+                        
+                    </ul>
+                  </div>
+            </div>
+            <form action="/cruise/edit" method="post">
+                <div class="row mb-3">
+                    <label for="cruiseId" class="col-sm-2 col-form-label">Cruise Id</label>
+                    <div class="col-sm-10">
+                        <input readonly type="text" th:value="${cruiseData.cruiseId}" class="form-control" id="cruiseId" name="cruiseId">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="cruiseDestination" class="col-sm-2 col-form-label">Cruise Destination</label>
+                    <div class="col-sm-10">
+                        <input required type="text" th:value="${cruiseData.cruiseDestination}" class="form-control" id="cruiseDestination" name="cruiseDestination">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="cruiseLine" class="col-sm-2 col-form-label">Cruise Line</label>
+                    <div class="col-sm-10">
+                        <input required type="text" class="form-control" th:value="${cruiseData.cruiseDestination}" id="cruiseLine" name="cruiseLine">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="departureDate" class="col-sm-2 col-form-label">Departure Date</label>
+                    <div class="col-sm-10">
+                        <input required type="date" class="form-control" id="departureDate" th:value="${cruiseData.departureDate}" name="departureDate">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="visitingPlaces" class="col-sm-2 col-form-label">Visiting Places</label>
+                    <div class="col-sm-10">
+                        <input required type="text" class="form-control" id="visitingPlaces" th:value="${cruiseData.visitingPlaces}" name="visitingPlaces">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="duration" class="col-sm-2 col-form-label">Duration</label>
+                    <div class="col-sm-10">
+                        <input required type="number" class="form-control" id="duration" th:value="${cruiseData.duration}" name="duration">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="price" class="col-sm-2 col-form-label">Price</label>
+                    <div class="col-sm-10">
+                        <input required type="text" class="form-control" id="price" th:value="${cruiseData.price}" name="price">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
 
-                </tr>
-                <tbody class="table-group-divider">
-                    <tr th:each="cruise : ${cruises}">
-                        <td th:text="${cruise.cruiseId}"></td>
-                        <td th:text="${cruise.cruiseDestination}"></td>
-                        <td th:text="${cruise.cruiseLine}"></td>
-                        <td th:text="${cruise.departureDate}"></td>
-                        <td th:text="${cruise.visitingPlaces}"></td>
-                        <td th:text="${cruise.duration}"></td>
-                        <td th:text="${cruise.price}"></td>
-                        <td>
-                            <form method="post" class="btn btn-sm" th:action="@{/cruise/edit/{id}(id=${cruise.cruiseId})}">
-                                <input type="submit" value="Edit">
-                            </form>
-                            <form method="post" class="btn btn-sm" th:action="@{/cruise/delete/{id}(id=${cruise.cruiseId})}">
-                                <input type="submit" value="Delete">
-                            </form></td>
-
-                    </tr>
-                </tbody>
-            </table>
         </div>
     </main>
 
